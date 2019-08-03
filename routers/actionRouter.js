@@ -42,5 +42,34 @@ router.post('/', (req, res) => {
         res
             .status(400)
             .json({ message: "Please input project id/description/notes to continue"})
+    } else {
+        actionsDB
+            .insert(newAction)
+            .then(post => res.json(post))
+            .catch(err => res.status(500).json({error: "Failed to add a new action"}))
     }
 })
+
+// PUT 
+
+router.put('/:id', (req, res) => {
+    const id = req.params.id;
+    const newAction = req.body;
+    actionsDB
+        .update(id, newAction)
+        .then(action => {
+            if(action) {
+                res.json(action)
+            } else {
+                res
+                    .status(500)
+                    .json({ message: "Action at specified ID not found"})
+            }
+        })
+        .catch(err => {
+            res
+                .status(500)
+                .json({ message: "Failed to upload action"})
+        })
+})
+
