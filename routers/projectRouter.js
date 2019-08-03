@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const actionsdb = require("../data/helpers/actionModel");
-comst projectsdb = require("../data/helpers/projectModel");
+const projectsdb = require("../data/helpers/projectModel");
 
 // it is CRUD time
 
@@ -63,7 +63,7 @@ router.delete("/:id", validateProjectId, (req, res) => {
             res.status(500).json({
                 message: "another error"
             });
-        };
+        });
             
 });
 
@@ -84,3 +84,39 @@ router.put("/:id", validateProjectId, (req, res) => {
         });
 });
 
+router.get("/id/actions", (req, res) => {
+    projectsdb.getProjectActions(req,params.id)
+    .then(actions => {
+        if(actions) {
+            res.status(200).json(actions);
+        } else {
+            res.status(404).json({ message: "No project"});
+        }
+    })
+    .catch(error => {
+        res.status(500).json({
+            message: "Error"
+        });
+    });
+});
+
+function validateProjectId (req, res, next) {
+  const id = req.params.id
+  projectsdb
+    .get(id)
+    .then(project => {
+      if (project) {
+        req.project = project
+        next()
+      } else {
+        res.status(400).json({ message: 'Invalid Project ID' })
+      }
+    })
+    .catch(error => {
+      res
+        .status(500)
+        .json({ message: 'error in the validation by id function' })
+    })
+}
+
+module.exports = router
