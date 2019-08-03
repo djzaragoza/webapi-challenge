@@ -73,3 +73,27 @@ router.put('/:id', (req, res) => {
         })
 })
 
+// delete actions without terminating proj
+
+router.delete('/:id', (req, res) => {
+    const id = req.params.id;
+    actionsDB
+        .remove(id)
+        .then(count => {
+            if(count) {
+                res.json({ message: "Action successfully deleted"})
+            }
+            else {
+                res
+                    .status(404)
+                    .json({ error: "Action at specified ID could not be found "})
+            }
+        })
+        .catch(err => {
+            res
+                .status(500)
+                .json({ error: "Failed to delete action"})
+        })
+})
+
+module.exports = router;
