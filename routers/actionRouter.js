@@ -37,7 +37,7 @@ router.get('/:id', (req, res) => {
 //post check to see that the proj id exists 
 
 router.post('/', (req, res) => {
-    const {project_id, description, notes};
+    const {project_id, description, notes}=req.body;
     if(!project_id || !description || !notes) {
         res
             .status(400)
